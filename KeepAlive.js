@@ -12,4 +12,4 @@ function keepAlive() {
  })
 }
 
-module.exports =  keepAlive
+ export default  keepAlive
