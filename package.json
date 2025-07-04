@@ -11,11 +11,13 @@
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
+	"type": "module",
 	"description": "",
 	"dependencies": {
 		"axios": "^1.10.0",
 		"discord.js": "^14.21.0",
 		"dotenv": "^17.0.1",
-		"express": "^5.1.0"
+		"express": "^5.1.0",
+		"nodemon": "^3.1.10"
 	}
 }
