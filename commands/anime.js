@@ -16,7 +16,7 @@ export default {
           { name: "Cry (gif)", value: "cry" },
           { name: "Laugh (gif)", value: "laugh" },
           { name: "Nod (gif)", value: "nod" },
-          { name: "Angry (gif)", value: "angry" },
+          { name: "Angry (gif)", value: "angry" }
         )
     ),
   async execute(interaction) {
@@ -33,10 +33,9 @@ export default {
         )
         .setImage(response.data.results[0].url)
         .setColor("Blurple")
-        .setDescription({
+        .setFooter({
           text: "Powered by [nekos.best](https://docs.nekos.best)",
-        })
-        .setFooter("UwU");
+        });
 
       await interaction.editReply({ embeds: [embed] });
     } catch (error) {
