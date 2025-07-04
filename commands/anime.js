@@ -16,7 +16,10 @@ export default {
           { name: "Cry (gif)", value: "cry" },
           { name: "Laugh (gif)", value: "laugh" },
           { name: "Nod (gif)", value: "nod" },
-          { name: "Angry (gif)", value: "angry" }
+          { name: "Angry (gif)", value: "angry" },
+          { name: "Neko (png)", value: "neko" },
+          { name: "Waifu (png)", value: "waifu" },
+          { name: "Husbando (png)", value: "husbando" }
         )
     ),
   async execute(interaction) {
