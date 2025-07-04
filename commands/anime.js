@@ -26,7 +26,10 @@ export default {
         )
         .setImage(response.data.results[0].url)
         .setColor("Blurple")
-        .setFooter({ text: "Powered by nekos.best" });
+        .setDescription({
+          text: "Powered by [nekos.best](https://docs.nekos.best)",
+        })
+        .setFooter('UwU');
 
       await interaction.editReply({ embeds: [embed] });
     } catch (error) {
