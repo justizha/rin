@@ -1,0 +1,39 @@
+import axios from "axios";
+import { SlashCommandBuilder, EmbedBuilder } from "discord.js";
+
+export default {
+  data: new SlashCommandBuilder()
+    .setName("gif")
+    .setDescription("Get Random Anime Gif or Png By Category ! 🪄")
+    .addStringOption((option) =>
+      option
+        .setName("Category")
+        .setDescription("Choose a category.")
+        .setRequired(false)
+        .addChoices({ name: "Yeet (gif)", value: "yeet" })
+    ),
+  async execute(interaction) {
+    await interaction.deferReply();
+    try {
+      const category = interaction.options.getString("category") || "wave";
+      const response = await axios.get(`https://nekos.best/api/v2/${category}`);
+
+      const embed = new EmbedBuilder()
+        .setTitle(
+          `Random ${
+            category.charAt(0).toUpperCase() + category.slice(1)
+          } Image / Gif`
+        )
+        .setImage(response.data.url)
+        .setColor("Blurple")
+        .setFooter({ text: "Powered by nekos.best" });
+
+      await interaction.editReply({ embeds: [embed] });
+    } catch (error) {
+      console.error("Anime API Error:", error);
+      await interaction.editReply(
+        "Sorry, couldn't fetch an anime image right now! 😔"
+      );
+    }
+  },
+};
