@@ -10,7 +10,14 @@ export default {
         .setName("category")
         .setDescription("Choose a category.")
         .setRequired(false)
-        .addChoices({ name: "Yeet (gif)", value: "yeet" })
+        .addChoices(
+          { name: "Yeet (gif)", value: "yeet" },
+          { name: "Pout (gif)", value: "pout" },
+          { name: "Cry (gif)", value: "cry" },
+          { name: "Laugh (gif)", value: "laugh" },
+          { name: "Nod (gif)", value: "nod" },
+          { name: "Angry (gif)", value: "angry" },
+        )
     ),
   async execute(interaction) {
     await interaction.deferReply();
@@ -29,7 +36,7 @@ export default {
         .setDescription({
           text: "Powered by [nekos.best](https://docs.nekos.best)",
         })
-        .setFooter('UwU');
+        .setFooter("UwU");
 
       await interaction.editReply({ embeds: [embed] });
     } catch (error) {
