@@ -24,7 +24,7 @@ export default {
             category.charAt(0).toUpperCase() + category.slice(1)
           } Image / Gif`
         )
-        .setImage(response.data.url)
+        .setImage(response.data.results[0].url)
         .setColor("Blurple")
         .setFooter({ text: "Powered by nekos.best" });
 

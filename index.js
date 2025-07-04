@@ -1,12 +1,10 @@
 import { Client, Collection, GatewayIntentBits } from "discord.js";
 import fs from "node:fs";
+import { config } from "dotenv";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { config } from "dotenv";
-import keepAlive from "./KeepAlive.js";
-
-keepAlive();
-
+import { REST } from "@discordjs/rest";
+import { Routes } from "discord-api-types/v9";
 config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,58 +26,46 @@ const commandFiles = fs
 
 for (const file of commandFiles) {
   const filePath = path.join(commandsPath, file);
-  try {
-    const commandModule = await import(`file://${filePath}`);
-    const command = commandModule.default;
-
-    if ("data" in command && "execute" in command) {
-      client.commands.set(command.data.name, command);
-      console.log(`✅ Loaded command: ${command.data.name}`);
-    } else {
-      console.log(
-        `⚠️ Command at ${filePath} is missing required "data" or "execute" property.`
-      );
-    }
-  } catch (error) {
-    console.error(`❌ Error loading command ${file}:`, error);
-  }
+  const commandModule = await import(`file://${filePath}`);
+  const command = commandModule.default;
+  client.commands.set(command.data.name, command);
 }
 
-const eventsPath = path.join(__dirname, "events");
-if (fs.existsSync(eventsPath)) {
-  const eventFiles = fs
-    .readdirSync(eventsPath)
-    .filter((file) => file.endsWith(".js"));
-
-  for (const file of eventFiles) {
-    const filePath = path.join(eventsPath, file);
-    try {
-      const eventModule = await import(`file://${filePath}`);
-      const event = eventModule.default;
-
-      if (event.once) {
-        client.once(event.name, (...args) => event.execute(...args));
-      } else {
-        client.on(event.name, (...args) => event.execute(...args));
-      }
-      console.log(`✅ Loaded event: ${event.name}`);
-    } catch (error) {
-      console.error(`❌ Error loading event ${file}:`, error);
-    }
-  }
-}
-
-client.login(process.env.DISCORD_TOKEN).catch((error) => {
-  console.error("❌ Failed to login:", error);
+client.once("ready", () => {
+  console.log(`✅ ${client.user.tag} is ready to serve random images!`);
 });
 
-client.on("messageCreate", (message) => {
-  if (
-    message.content === "!restart" &&
-    message.author.id === process.env.USER_ID
-  ) {
-    message.reply("Restarting bot...").then(() => {
-      process.exit(0); 
+client.on("interactionCreate", async (interaction) => {
+  if (!interaction.isChatInputCommand()) return;
+  const command = client.commands.get(interaction.commandName);
+  if (!command) return;
+  try {
+    await command.execute(interaction);
+  } catch (error) {
+    console.error(error);
+    await interaction.reply({
+      content: "Oops! Something went wrong while fetching your image.",
+      ephemeral: true,
     });
   }
 });
+
+const commands = [];
+for (const [name, command] of client.commands) {
+  commands.push(command.data.toJSON());
+}
+
+const rest = new REST({ version: "9" }).setToken(process.env.DISCORD_TOKEN);
+
+try {
+  console.log("Registering slash commands...");
+  await rest.put(
+    Routes.applicationCommands(process.env.CLIENT_ID), // Add CLIENT_ID to your .env
+    { body: commands }
+  );
+  console.log("✅ Slash commands registered!");
+} catch (error) {
+  console.error("❌ Error registering commands:", error);
+}
+
+client.login(process.env.DISCORD_TOKEN);
