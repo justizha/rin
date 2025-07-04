@@ -3,11 +3,11 @@ import { SlashCommandBuilder, EmbedBuilder } from "discord.js";
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("gif")
+    .setName("anime")
     .setDescription("Get Random Anime Gif or Png By Category ! 🪄")
     .addStringOption((option) =>
       option
-        .setName("Category")
+        .setName("category")
         .setDescription("Choose a category.")
         .setRequired(false)
         .addChoices({ name: "Yeet (gif)", value: "yeet" })
