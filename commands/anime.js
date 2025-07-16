@@ -22,6 +22,7 @@ export default {
           { name: "Husbando (png)", value: "husbando" }
         )
     ),
+
   async execute(interaction) {
     await interaction.deferReply();
     try {
